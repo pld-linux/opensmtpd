@@ -1,5 +1,4 @@
 # TODO
-# - allocate uid/gid
 # - should mailq and newalises be in bindir?
 
 # Conditional build:
@@ -30,8 +29,18 @@ BuildRequires:	openssl-devel
 BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts
+Provides:	group(smtpd)
+Provides:	group(smtpq)
 Provides:	smtpdaemon
+Provides:	user(smtpd)
+Provides:	user(smtpq)
 Obsoletes:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -87,12 +96,10 @@ mv $RPM_BUILD_ROOT{%{_bindir},%{_prefix}/lib}/sendmail
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%if 0
-%groupadd -r smtpd
-%groupadd -r smtpq
-%useradd -r -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d %{_privsepdir} smtpd
-%useradd -r -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d %{_privsepdir} smtpq
-%endif
+%groupadd -g 297 smtpd
+%groupadd -g 298 smtpq
+%useradd -u 297 -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d %{_privsepdir} smtpd
+%useradd -u 298 -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d %{_privsepdir} smtpq
 
 %post
 /sbin/chkconfig --add %{name}
@@ -107,6 +114,12 @@ fi
 %systemd_preun %{name}.service
 
 %postun
+if [ "$1" = "0" ]; then
+	%userremove smtpd
+	%userremove smtpq
+	%groupremove smtpd
+	%groupremove smtpq
+fi
 %systemd_reload
 
 %files
