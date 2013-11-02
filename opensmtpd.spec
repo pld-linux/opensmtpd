@@ -19,6 +19,7 @@ Source0:	http://www.opensmtpd.org/archives/%{name}-%{prerelease}p1.tar.gz
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
+Source4:	aliases
 URL:		http://www.opensmtpd.org/
 BuildRequires:	automake
 BuildRequires:	bison
@@ -73,6 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{systemdunitdir},/etc/{rc.d/init.d,pam.d}}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/opensmtpd.service
 install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/opensmtpd
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/mail
 %if %{with pam}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/smtp
 %endif
@@ -110,7 +112,9 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc LICENSE README.md THANKS
+%dir %{_sysconfdir}/mail
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/smtpd.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/aliases
 %if %{with pam}
 %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/smtp
 %endif
