@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_without	pam		# build without PAM support
 
-%define	rel	0.3
+%define	rel	0.4
 %define	prerelease	201310231634
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
@@ -96,6 +96,7 @@ cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/mail
 %if %{with pam}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/smtp
 %endif
+touch $RPM_BUILD_ROOT%{_sysconfdir}/mail/aliases.db
 
 # /usr/sbin/sendmail compatibility is not required /usr/lib/sendmail is
 install -d $RPM_BUILD_ROOT%{_prefix}/lib
@@ -137,6 +138,7 @@ fi
 %dir %{_sysconfdir}/mail
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/smtpd.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/aliases
+%ghost %{_sysconfdir}/mail/aliases.db
 %if %{with pam}
 %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/smtp
 %endif
