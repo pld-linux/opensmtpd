@@ -24,10 +24,10 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
 BuildRequires:	libevent-devel
-BuildRequires:	libtool
 BuildRequires:	openssl-devel
 %{?with_pam:BuildRequires:	pam-devel}
 BuildRequires:	rpmbuild(macros) >= 1.228
+BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
 Provides:	smtpdaemon
