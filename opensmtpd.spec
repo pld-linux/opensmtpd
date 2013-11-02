@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_without	pam		# build without PAM support
 
-%define	rel	0.2
+%define	rel	0.3
 %define	prerelease	201310231634
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
@@ -20,7 +20,9 @@ Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
 Patch0:		chroot-path.patch
+Patch1:		makemap-paths.patch
 URL:		http://www.opensmtpd.org/
+BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
@@ -63,8 +65,13 @@ re-usable by everyone under an ISC license.
 %prep
 %setup -q %{?prerelease: -n %{name}-%{prerelease}p1}
 %patch0 -p1
+%patch1 -p1
 
 %build
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
 	--libexecdir=%{_libdir}/%{name} \
