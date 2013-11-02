@@ -33,7 +33,7 @@ pidfile="/var/run/smtpd.pid"
 
 start() {
 	# Check if the service is already running?
-	if [ -f /var/lock/subsys/smtpd ]; then
+	if [ -f /var/lock/subsys/opensmtpd ]; then
 		msg_already_running "OpenSMTPd"
 		return
 	fi
@@ -41,11 +41,11 @@ start() {
 	msg_starting "OpenSMTPd"
 	daemon /usr/sbin/smtpd
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/smtpd
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/opensmtpd
 }
 
 stop() {
-	if [ ! -f /var/lock/subsys/smtpd ]; then
+	if [ ! -f /var/lock/subsys/opensmtpd ]; then
 		msg_not_running "OpenSMTPd"
 		return
 	fi
@@ -53,11 +53,11 @@ stop() {
 	# Stop daemons.
 	msg_stopping "OpenSMTPd"
 	killproc --pidfile $pidfile smtpd -TERM
-	rm -f /var/lock/subsys/smtpd
+	rm -f /var/lock/subsys/opensmtpd
 }
 
 condrestart() {
-	if [ ! -f /var/lock/subsys/smtpd ]; then
+	if [ ! -f /var/lock/subsys/opensmtpd ]; then
 		msg_not_running "OpenSMTPd"
 		RETVAL=$1
 		return
