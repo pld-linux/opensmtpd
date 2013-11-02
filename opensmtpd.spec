@@ -53,10 +53,6 @@ re-usable by everyone under an ISC license.
 %setup -q %{?prerelease: -n %{name}-%{prerelease}p1}
 
 %build
-# db4 paths
-CFLAGS="$CFLAGS -I%{_includedir}/libdb4"
-LDFLAGS="$LDFLAGS -L%{_libdir}/libdb4"
-
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
 	--libexecdir=%{_libdir}/%{name} \
@@ -92,8 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 %if 0
 %groupadd -r smtpd
 %groupadd -r smtpq
-%useradd -r -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d /usr/share/empty smtpd
-%useradd -r -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d /usr/share/empty smtpq
+%useradd -r -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d %{_privsepdir} smtpd
+%useradd -r -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d %{_privsepdir} smtpq
 %endif
 
 %post
