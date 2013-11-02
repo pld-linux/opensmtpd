@@ -34,6 +34,8 @@ Provides:	smtpdaemon
 Obsoletes:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_privsepdir	/usr/share/empty
+
 %description
 OpenSMTPD is a FREE implementation of the server-side SMTP protocol as
 defined by RFC 5321, with some additional standard extensions. It
@@ -62,7 +64,7 @@ LDFLAGS="$LDFLAGS -L%{_libdir}/libdb4"
 	%{?with_pam:--with-pam} \
 	--with-privsep-user=smtpd \
 	--with-queue-user=smtpq \
-	--with-privsep-path=/usr/share/empty \
+	--with-privsep-path=%{_privsepdir} \
 	--with-sock-dir=%{_localstatedir}/run
 
 %{__make}
