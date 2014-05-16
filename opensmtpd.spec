@@ -4,17 +4,14 @@
 # Conditional build:
 %bcond_without	pam		# build without PAM support
 
-%define	rel	0.4
-%define	prerelease	201310231634
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
-Version:	5.3.3p1
-Release:	0.%{prerelease}.%{rel}
+Version:	5.4.2p1
+Release:	0.1
 License:	ISC
 Group:		Daemons
-#Source0:	http://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-Source0:	http://www.opensmtpd.org/archives/%{name}-%{prerelease}p1.tar.gz
-# Source0-md5:	d4c28a45527356fbec19853220e3688d
+Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
+# Source0-md5:	c76b39a5fcc0ad05eea541e74b16e62a
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
@@ -160,16 +157,17 @@ fi
 %{_mandir}/man8/smtpctl.8*
 %{_mandir}/man8/smtpd.8*
 %dir %{_libdir}/%{name}
-%dir %{_libdir}/%{name}/smtpd
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/backend-queue-null
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/backend-queue-ram
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/backend-queue-stub
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/backend-scheduler-ram
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/backend-scheduler-stub
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/filter-dnsbl
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/filter-monkey
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/filter-stub
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/filter-trace
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/mail.local
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/table-passwd
-%attr(755,root,root) %{_libdir}/%{name}/smtpd/table-stub
+%dir %{_libdir}/%{name}/opensmtpd
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/encrypt
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-dnsbl
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-monkey
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-stub
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-trace
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/mail.local
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-null
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-ram
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-stub
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/scheduler-ram
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/scheduler-stub
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-passwd
+%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-stub

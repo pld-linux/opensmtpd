@@ -1,11 +1,11 @@
---- opensmtpd-201310231634p1/smtpd/smtpd-defines.h~	2013-10-23 16:41:36.000000000 +0300
-+++ opensmtpd-201310231634p1/smtpd/smtpd-defines.h	2013-11-03 01:19:09.536801945 +0200
-@@ -31,7 +31,7 @@
- #ifndef SMTPD_USER
- #define SMTPD_USER		 "_smtpd"
+--- opensmtpd-5.4.2p1/smtpd/smtpd-defines.h~	2014-03-04 11:49:09.000000000 +0200
++++ opensmtpd-5.4.2p1/smtpd/smtpd-defines.h	2014-05-16 08:35:53.999689310 +0300
+@@ -32,7 +32,7 @@
+ #define SMTPD_USER		"_smtpd"
  #endif
+ #ifndef PATH_CHROOT
 -#define PATH_CHROOT		"/var/empty"
 +#define PATH_CHROOT		"/usr/share/empty"
- #ifndef SMTPD_QUEUE_USER
- #define SMTPD_QUEUE_USER	 "_smtpq"
  #endif
+ #ifndef SMTPD_QUEUE_USER
+ #define SMTPD_QUEUE_USER	"_smtpq"
