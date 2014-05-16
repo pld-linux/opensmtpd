@@ -7,7 +7,7 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
 Version:	5.4.2p1
-Release:	0.2
+Release:	0.6
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -43,6 +43,7 @@ Obsoletes:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_privsepdir	/usr/share/empty
+%define		_spooldir	/var/spool/smtpd
 
 %description
 OpenSMTPD is a FREE implementation of the server-side SMTP protocol as
@@ -94,6 +95,9 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/mail/aliases.db
 # /usr/sbin/sendmail compatibility is not required /usr/lib/sendmail is
 install -d $RPM_BUILD_ROOT%{_prefix}/lib
 mv $RPM_BUILD_ROOT{%{_bindir},%{_prefix}/lib}/sendmail
+
+# queue dirs
+install -d $RPM_BUILD_ROOT%{_spooldir}/{queue,corrupt,incoming,offline,purge,temporary}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -167,3 +171,11 @@ fi
 %attr(755,root,root) %{_libdir}/%{name}/opensmtpd/scheduler-stub
 %attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-passwd
 %attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-stub
+
+%dir %attr(711,root,root) %{_spooldir}
+%dir %attr(1777,root,root) %{_spooldir}/offline
+%dir %attr(700,smtpq,root) %{_spooldir}/corrupt
+%dir %attr(700,smtpq,root) %{_spooldir}/incoming
+%dir %attr(700,smtpq,root) %{_spooldir}/purge
+%dir %attr(700,smtpq,root) %{_spooldir}/queue
+%dir %attr(700,smtpq,root) %{_spooldir}/temporary
