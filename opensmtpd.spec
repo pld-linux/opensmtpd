@@ -7,7 +7,7 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
 Version:	5.4.2p1
-Release:	0.6
+Release:	0.7
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -68,7 +68,6 @@ re-usable by everyone under an ISC license.
 %{__automake}
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
-	--libexecdir=%{_libdir}/%{name} \
 	--with-mantype=man \
 	%{?with_pam:--with-pam} \
 	--with-privsep-user=smtpd \
@@ -157,20 +156,19 @@ fi
 %{_mandir}/man8/smtpctl.8*
 %{_mandir}/man8/smtpd.8*
 %dir %{_libdir}/%{name}
-%dir %{_libdir}/%{name}/opensmtpd
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/encrypt
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-dnsbl
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-monkey
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-stub
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/filter-trace
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/mail.local
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-null
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-ram
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/queue-stub
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/scheduler-ram
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/scheduler-stub
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-passwd
-%attr(755,root,root) %{_libdir}/%{name}/opensmtpd/table-stub
+%attr(755,root,root) %{_libdir}/%{name}/encrypt
+%attr(755,root,root) %{_libdir}/%{name}/filter-dnsbl
+%attr(755,root,root) %{_libdir}/%{name}/filter-monkey
+%attr(755,root,root) %{_libdir}/%{name}/filter-stub
+%attr(755,root,root) %{_libdir}/%{name}/filter-trace
+%attr(755,root,root) %{_libdir}/%{name}/mail.local
+%attr(755,root,root) %{_libdir}/%{name}/queue-null
+%attr(755,root,root) %{_libdir}/%{name}/queue-ram
+%attr(755,root,root) %{_libdir}/%{name}/queue-stub
+%attr(755,root,root) %{_libdir}/%{name}/scheduler-ram
+%attr(755,root,root) %{_libdir}/%{name}/scheduler-stub
+%attr(755,root,root) %{_libdir}/%{name}/table-passwd
+%attr(755,root,root) %{_libdir}/%{name}/table-stub
 
 %dir %attr(711,root,root) %{_spooldir}
 %dir %attr(1777,root,root) %{_spooldir}/offline
