@@ -7,7 +7,7 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
 Version:	5.4.2p1
-Release:	0.1
+Release:	0.2
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -16,8 +16,6 @@ Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
-Patch0:		chroot-path.patch
-Patch1:		makemap-paths.patch
 URL:		http://www.opensmtpd.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -60,9 +58,7 @@ part of the OpenBSD Project. The software is freely usable and
 re-usable by everyone under an ISC license.
 
 %prep
-%setup -q %{?prerelease: -n %{name}-%{prerelease}p1}
-%patch0 -p1
-%patch1 -p1
+%setup -q
 
 %build
 %{__aclocal}
