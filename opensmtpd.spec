@@ -35,6 +35,7 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts
+Suggests:	ca-certificates
 Provides:	group(smtpd)
 Provides:	group(smtpq)
 Provides:	smtpdaemon
@@ -43,8 +44,9 @@ Provides:	user(smtpq)
 Obsoletes:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_privsepdir	/usr/share/empty
-%define		_spooldir	/var/spool/smtpd
+%define		privsepdir	/usr/share/empty
+%define		spooldir	/var/spool/smtpd
+%define		certsdir	/etc/certs
 
 %description
 OpenSMTPD is a FREE implementation of the server-side SMTP protocol as
@@ -69,11 +71,12 @@ re-usable by everyone under an ISC license.
 %{__automake}
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
+	--with-ca-file=%{certsdir}/ca-certificates.crt \
 	--with-mantype=man \
 	%{?with_pam:--with-pam} \
 	--with-privsep-user=smtpd \
 	--with-queue-user=smtpq \
-	--with-privsep-path=%{_privsepdir} \
+	--with-privsep-path=%{privsepdir} \
 	--with-sock-dir=%{_localstatedir}/run
 
 %{__make}
@@ -97,7 +100,7 @@ install -d $RPM_BUILD_ROOT%{_prefix}/lib
 mv $RPM_BUILD_ROOT{%{_bindir},%{_prefix}/lib}/sendmail
 
 # queue dirs
-install -d $RPM_BUILD_ROOT%{_spooldir}/{queue,corrupt,incoming,offline,purge,temporary}
+install -d $RPM_BUILD_ROOT%{spooldir}/{queue,corrupt,incoming,offline,purge,temporary}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -105,8 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 %pre
 %groupadd -g 297 smtpd
 %groupadd -g 298 smtpq
-%useradd -u 297 -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d %{_privsepdir} smtpd
-%useradd -u 298 -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d %{_privsepdir} smtpq
+%useradd -u 297 -g smtpd -s /sbin/nologin -c "OpenSMTPd privsep user" -d %{privsepdir} smtpd
+%useradd -u 298 -g smtpq -s /sbin/nologin -c "OpenSMTPd queue user" -d %{privsepdir} smtpq
 
 %post
 /sbin/chkconfig --add %{name}
@@ -160,10 +163,10 @@ fi
 %attr(755,root,root) %{_libdir}/%{name}/encrypt
 %attr(755,root,root) %{_libdir}/%{name}/mail.local
 
-%dir %attr(711,root,root) %{_spooldir}
-%dir %attr(1777,root,root) %{_spooldir}/offline
-%dir %attr(700,smtpq,root) %{_spooldir}/corrupt
-%dir %attr(700,smtpq,root) %{_spooldir}/incoming
-%dir %attr(700,smtpq,root) %{_spooldir}/purge
-%dir %attr(700,smtpq,root) %{_spooldir}/queue
-%dir %attr(700,smtpq,root) %{_spooldir}/temporary
+%dir %attr(711,root,root) %{spooldir}
+%dir %attr(1777,root,root) %{spooldir}/offline
+%dir %attr(700,smtpq,root) %{spooldir}/corrupt
+%dir %attr(700,smtpq,root) %{spooldir}/incoming
+%dir %attr(700,smtpq,root) %{spooldir}/purge
+%dir %attr(700,smtpq,root) %{spooldir}/queue
+%dir %attr(700,smtpq,root) %{spooldir}/temporary
