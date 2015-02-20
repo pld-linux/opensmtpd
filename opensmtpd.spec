@@ -1,17 +1,17 @@
 # TODO
-# - should mailq and newalises be in bindir?
+# - should mailq and newaliases be in bindir?
 
 # Conditional build:
 %bcond_without	pam		# build without PAM support
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
-Version:	5.4.2p1
+Version:	5.4.4p1
 Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	c76b39a5fcc0ad05eea541e74b16e62a
+# Source0-md5:	2866451425dadf4e110723906c435354
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
@@ -21,6 +21,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
+BuildRequires:	libasr-devel
 BuildRequires:	libevent-devel
 BuildRequires:	openssl-devel
 %{?with_pam:BuildRequires:	pam-devel}
@@ -157,18 +158,7 @@ fi
 %{_mandir}/man8/smtpd.8*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/encrypt
-%attr(755,root,root) %{_libdir}/%{name}/filter-dnsbl
-%attr(755,root,root) %{_libdir}/%{name}/filter-monkey
-%attr(755,root,root) %{_libdir}/%{name}/filter-stub
-%attr(755,root,root) %{_libdir}/%{name}/filter-trace
 %attr(755,root,root) %{_libdir}/%{name}/mail.local
-%attr(755,root,root) %{_libdir}/%{name}/queue-null
-%attr(755,root,root) %{_libdir}/%{name}/queue-ram
-%attr(755,root,root) %{_libdir}/%{name}/queue-stub
-%attr(755,root,root) %{_libdir}/%{name}/scheduler-ram
-%attr(755,root,root) %{_libdir}/%{name}/scheduler-stub
-%attr(755,root,root) %{_libdir}/%{name}/table-passwd
-%attr(755,root,root) %{_libdir}/%{name}/table-stub
 
 %dir %attr(711,root,root) %{_spooldir}
 %dir %attr(1777,root,root) %{_spooldir}/offline
