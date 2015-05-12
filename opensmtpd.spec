@@ -6,12 +6,12 @@
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
-Version:	5.4.4p1
+Version:	5.4.5p1
 Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	2866451425dadf4e110723906c435354
+# Source0-md5:	05b58cecf0d6c2f385954b94d85e271a
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
