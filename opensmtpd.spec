@@ -3,15 +3,16 @@
 
 # Conditional build:
 %bcond_without	pam		# build without PAM support
+%bcond_with	table_db	# Enable building of table-db backend
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
-Version:	5.4.5p1
-Release:	1
+Version:	5.7.3p1
+Release:	0.1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	05b58cecf0d6c2f385954b94d85e271a
+# Source0-md5:	754abb7f08c094273f098d761c8c2221
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
@@ -145,8 +146,6 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/opensmtpd
 %{systemdunitdir}/%{name}.service
 %attr(755,root,root) %{_sbindir}/mailq
-%attr(755,root,root) %{_sbindir}/makemap
-%attr(755,root,root) %{_sbindir}/newaliases
 %attr(755,root,root) %{_sbindir}/smtpctl
 %attr(755,root,root) %{_sbindir}/smtpd
 %attr(755,root,root) %{_prefix}/lib/sendmail
@@ -154,11 +153,17 @@ fi
 %{_mandir}/man5/forward.5*
 %{_mandir}/man5/smtpd.conf.5*
 %{_mandir}/man5/table.5*
-%{_mandir}/man8/makemap.8*
-%{_mandir}/man8/newaliases.8*
 %{_mandir}/man8/sendmail.8*
 %{_mandir}/man8/smtpctl.8*
 %{_mandir}/man8/smtpd.8*
+
+%if %{with table_db}
+%attr(755,root,root) %{_sbindir}/makemap
+%attr(755,root,root) %{_sbindir}/newaliases
+%{_mandir}/man8/makemap.8*
+%{_mandir}/man8/newaliases.8*
+%endif
+
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/encrypt
 %attr(755,root,root) %{_libdir}/%{name}/mail.local
