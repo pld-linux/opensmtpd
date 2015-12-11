@@ -3,12 +3,12 @@
 
 # Conditional build:
 %bcond_without	pam		# build without PAM support
-%bcond_with	table_db	# Enable building of table-db backend
+%bcond_without	table_db	# build table-db backend
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
 Version:	5.7.3p1
-Release:	0.1
+Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -75,6 +75,7 @@ re-usable by everyone under an ISC license.
 	--with-ca-file=%{certsdir}/ca-certificates.crt \
 	--with-mantype=man \
 	%{?with_pam:--with-pam} \
+	%{?with_pam:--enable-table-db} \
 	--with-privsep-user=smtpd \
 	--with-queue-user=smtpq \
 	--with-privsep-path=%{privsepdir} \
