@@ -8,7 +8,7 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
 Version:	5.7.3p2
-Release:	1
+Release:	2
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -43,6 +43,7 @@ Provides:	smtpdaemon
 Provides:	user(smtpd)
 Provides:	user(smtpq)
 Obsoletes:	smtpdaemon
+%requires_ge_to	openssl	openssl-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		privsepdir	/usr/share/empty
