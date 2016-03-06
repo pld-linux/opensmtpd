@@ -31,6 +31,43 @@ fi
 
 pidfile="/var/run/smtpd.pid"
 
+# configtest itself
+# must return non-zero if check failed
+# output is discarded if checkconfig is ran without details
+configtest() {
+	/usr/sbin/smtpd -n
+	return $?
+}
+
+# wrapper for configtest
+checkconfig() {
+	local details=${1:-0}
+
+	if [ $details = 1 ]; then
+		# run config test and display report (status action)
+		show "Checking %s configuration" "OpenSMTPd"; busy
+		local out
+		out=$(configtest 2>&1)
+		RETVAL=$?
+		if [ $RETVAL = 0 ]; then
+			ok
+		else
+			fail
+		fi
+		[ "$out" ] && echo >&2 "$out"
+	else
+		# run config test and abort with nice message if failed
+		# (for actions checking status before action).
+		configtest >/dev/null 2>&1
+		RETVAL=$?
+		if [ $RETVAL != 0 ]; then
+			show "Checking %s configuration" "OpenSMTPd"; fail
+			nls 'Configuration test failed. See details with %s "checkconfig"' $0
+			exit $RETVAL
+		fi
+	fi
+}
+
 start() {
 	# Check if the service is already running?
 	if [ -f /var/lock/subsys/opensmtpd ]; then
@@ -38,6 +75,7 @@ start() {
 		return
 	fi
 
+	checkconfig
 	msg_starting "OpenSMTPd"
 	daemon /usr/sbin/smtpd
 	RETVAL=$?
@@ -63,6 +101,7 @@ condrestart() {
 		return
 	fi
 
+	checkconfig
 	stop
 	start
 }
@@ -86,12 +125,15 @@ case "$1" in
   force-reload)
 	condrestart 7
 	;;
+  checkconfig|configtest)
+	checkconfig 1
+	;;
   status)
 	status --pidfile $pidfile smtpd
 	RETVAL=$?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|checkconfig|status}"
 	exit 3
 esac
 
