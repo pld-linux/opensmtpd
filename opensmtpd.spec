@@ -7,16 +7,17 @@
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Name:		opensmtpd
-Version:	5.7.3p2
-Release:	4
+Version:	6.0.3p1
+Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	85bdccf1f28945771f79fd33e893cc43
+# Source0-md5:	66e496bb0f3303d660744f4fa2178765
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
+Patch0:		11_ssl_1.1.diff
 URL:		http://www.opensmtpd.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -65,6 +66,7 @@ re-usable by everyone under an ISC license.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__aclocal}
@@ -100,7 +102,12 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/mail/aliases.db
 
 # /usr/sbin/sendmail compatibility is not required /usr/lib/sendmail is
 install -d $RPM_BUILD_ROOT%{_prefix}/lib
-mv $RPM_BUILD_ROOT{%{_bindir},%{_prefix}/lib}/sendmail
+ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_prefix}/lib/sendmail
+
+# other utils
+ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/mailq
+ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/makemap
+ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/newaliases
 
 # queue dirs
 install -d $RPM_BUILD_ROOT%{spooldir}/{queue,corrupt,incoming,offline,purge,temporary}
@@ -166,9 +173,9 @@ fi
 %{_mandir}/man8/newaliases.8*
 %endif
 
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/encrypt
-%attr(755,root,root) %{_libdir}/%{name}/mail.local
+%dir %{_libexecdir}/%{name}
+%attr(755,root,root) %{_libexecdir}/%{name}/encrypt
+%attr(755,root,root) %{_libexecdir}/%{name}/mail.local
 
 %dir %attr(711,root,root) %{spooldir}
 %dir %attr(1777,root,root) %{spooldir}/offline
