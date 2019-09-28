@@ -1,0 +1,11 @@
+--- opensmtpd-6.4.2p1/configure.ac.orig	2019-09-28 17:12:18.247895541 +0200
++++ opensmtpd-6.4.2p1/configure.ac	2019-09-28 18:08:49.759522146 +0200
+@@ -1073,7 +1073,7 @@
+ 			fi
+ 
+ 			if test "x$ac_cv_header_security_pam_appl_h" != "xyes" -a \
+-			   test "x$ac_cv_header_pam_pam_appl_h" != "xyes"; then
++			   "x$ac_cv_header_pam_pam_appl_h" != "xyes"; then
+ 				AC_MSG_ERROR([PAM headers not found])
+ 			fi
+ 

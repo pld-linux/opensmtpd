@@ -1,30 +1,35 @@
 # TODO
 # - should mailq and newaliases be in bindir?
-
+#
 # Conditional build:
 %bcond_without	pam		# build without PAM support
 %bcond_without	table_db	# build table-db backend
 
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
+Summary(pl.UTF-8):	Wolnodostępna implementacja strony serwerowej protokołu SMTP wg RFC 5321
 Name:		opensmtpd
-Version:	6.0.3p1
+Version:	6.4.2p1
 Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	66e496bb0f3303d660744f4fa2178765
+# Source0-md5:	fecf68278db728e7112fdbb8ec551e33
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
 Patch0:		11_ssl_1.1.diff
-URL:		http://www.opensmtpd.org/
-BuildRequires:	autoconf
+# based on https://github.com/OpenSMTPD/OpenSMTPD/commit/227ca8aa76c6656ce04ebc51faebd927a561350e
+Patch1:		%{name}-openssl1.1.patch
+Patch2:		%{name}-ac.patch
+URL:		https://www.opensmtpd.org/
+BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake
 BuildRequires:	bison
-BuildRequires:	db-devel
+%{?with_table_db:BuildRequires:	db-devel}
 BuildRequires:	libasr-devel
 BuildRequires:	libevent-devel
+BuildRequires:	libtool >= 2:2
 BuildRequires:	openssl-devel
 %{?with_pam:BuildRequires:	pam-devel}
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -67,27 +72,30 @@ re-usable by everyone under an ISC license.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
-%{__aclocal}
+%{__libtoolize}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
-	--with-ca-file=%{certsdir}/ca-certificates.crt \
+	%{?with_pam:--with-auth-pam=smtp} \
+	--with-group-queue=smtpq \
 	--with-mantype=man \
-	%{?with_pam:--with-pam} \
-	%{?with_pam:--enable-table-db} \
-	--with-privsep-user=smtpd \
-	--with-queue-user=smtpq \
-	--with-privsep-path=%{privsepdir} \
-	--with-sock-dir=%{_localstatedir}/run
+	--with-path-CAfile=%{certsdir}/ca-certificates.crt \
+	%{?with_table_db:--with-table-db} \
+	--with-user-queue=smtpq \
+	--with-user-smtpd=smtpd
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
@@ -100,14 +108,16 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/smtp
 %endif
 touch $RPM_BUILD_ROOT%{_sysconfdir}/mail/aliases.db
 
-# /usr/sbin/sendmail compatibility is not required /usr/lib/sendmail is
 install -d $RPM_BUILD_ROOT%{_prefix}/lib
 ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_prefix}/lib/sendmail
 
 # other utils
 ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/mailq
+ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/sendmail
+%if %{with table_db}
 ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/makemap
 ln -s %{_sbindir}/smtpctl $RPM_BUILD_ROOT%{_sbindir}/newaliases
+%endif
 
 # queue dirs
 install -d $RPM_BUILD_ROOT%{spooldir}/{queue,corrupt,incoming,offline,purge,temporary}
@@ -148,13 +158,16 @@ fi
 %dir %{_sysconfdir}/mail
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/smtpd.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/aliases
+%if %{with table_db}
 %ghost %{_sysconfdir}/mail/aliases.db
+%endif
 %if %{with pam}
 %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/smtp
 %endif
 %attr(754,root,root) /etc/rc.d/init.d/opensmtpd
 %{systemdunitdir}/%{name}.service
 %attr(755,root,root) %{_sbindir}/mailq
+%attr(755,root,root) %{_sbindir}/sendmail
 %attr(755,root,root) %{_sbindir}/smtpctl
 %attr(755,root,root) %{_sbindir}/smtpd
 %attr(755,root,root) %{_prefix}/lib/sendmail
@@ -175,7 +188,11 @@ fi
 
 %dir %{_libexecdir}/%{name}
 %attr(755,root,root) %{_libexecdir}/%{name}/encrypt
+%attr(755,root,root) %{_libexecdir}/%{name}/mail.lmtp
 %attr(755,root,root) %{_libexecdir}/%{name}/mail.local
+%attr(755,root,root) %{_libexecdir}/%{name}/mail.maildir
+%attr(755,root,root) %{_libexecdir}/%{name}/mail.mboxfile
+%attr(755,root,root) %{_libexecdir}/%{name}/mail.mda
 
 %dir %attr(711,root,root) %{spooldir}
 %dir %attr(1777,root,root) %{spooldir}/offline
