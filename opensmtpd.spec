@@ -9,7 +9,7 @@ Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 
 Summary(pl.UTF-8):	Wolnodostępna implementacja strony serwerowej protokołu SMTP wg RFC 5321
 Name:		opensmtpd
 Version:	6.4.2p1
-Release:	2
+Release:	3
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
@@ -196,7 +196,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/%{name}/mail.mda
 
 %dir %attr(711,root,root) %{spooldir}
-%dir %attr(1777,root,root) %{spooldir}/offline
+%dir %attr(770,root,smtpq) %{spooldir}/offline
 %dir %attr(700,smtpq,root) %{spooldir}/corrupt
 %dir %attr(700,smtpq,root) %{spooldir}/incoming
 %dir %attr(700,smtpq,root) %{spooldir}/purge
