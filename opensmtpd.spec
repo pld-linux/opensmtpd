@@ -8,20 +8,17 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Summary(pl.UTF-8):	Wolnodostępna implementacja strony serwerowej protokołu SMTP wg RFC 5321
 Name:		opensmtpd
-Version:	6.4.2p1
-Release:	3
+Version:	6.6.2p1
+Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	fecf68278db728e7112fdbb8ec551e33
+# Source0-md5:	bd29619f56c009a4eb4879304771822b
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
-Patch0:		11_ssl_1.1.diff
-# based on https://github.com/OpenSMTPD/OpenSMTPD/commit/227ca8aa76c6656ce04ebc51faebd927a561350e
-Patch1:		%{name}-openssl1.1.patch
-Patch2:		%{name}-ac.patch
+Patch0:		%{name}-ac.patch
 URL:		https://www.opensmtpd.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake
@@ -72,8 +69,6 @@ re-usable by everyone under an ISC license.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -155,7 +150,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc LICENSE README.md THANKS
+%doc LICENSE README.md
 %dir %{_sysconfdir}/mail
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/smtpd.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mail/aliases
@@ -167,11 +162,13 @@ fi
 %endif
 %attr(754,root,root) /etc/rc.d/init.d/opensmtpd
 %{systemdunitdir}/%{name}.service
+%attr(755,root,root) %{_bindir}/smtp
 %attr(755,root,root) %{_sbindir}/mailq
 %attr(755,root,root) %{_sbindir}/sendmail
 %attr(755,root,root) %{_sbindir}/smtpctl
 %attr(755,root,root) %{_sbindir}/smtpd
 %attr(755,root,root) %{_prefix}/lib/sendmail
+%{_mandir}/man1/smtp.1*
 %{_mandir}/man5/aliases.5*
 %{_mandir}/man5/forward.5*
 %{_mandir}/man5/smtpd.conf.5*
