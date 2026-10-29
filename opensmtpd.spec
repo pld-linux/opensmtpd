@@ -8,25 +8,20 @@
 Summary:	Free implementation of the server-side SMTP protocol as defined by RFC 5321
 Summary(pl.UTF-8):	Wolnodostępna implementacja strony serwerowej protokołu SMTP wg RFC 5321
 Name:		opensmtpd
-Version:	6.8.0p2
-Release:	2
+Version:	7.9.0p0
+Release:	1
 License:	ISC
 Group:		Daemons
 Source0:	https://www.opensmtpd.org/archives/%{name}-%{version}.tar.gz
-# Source0-md5:	57209fc2bedf540b4649a42eb95341c5
+# Source0-md5:	4d695c62007b25c379527da78bdc7704
 Source1:	%{name}.service
 Source2:	%{name}.init
 Source3:	%{name}.pam
 Source4:	aliases
-Patch0:		%{name}-ac.patch
 URL:		https://www.opensmtpd.org/
-BuildRequires:	autoconf >= 2.69
-BuildRequires:	automake
 BuildRequires:	bison
 %{?with_table_db:BuildRequires:	db-devel}
-BuildRequires:	libasr-devel
 BuildRequires:	libevent-devel
-BuildRequires:	libtool >= 2:2
 BuildRequires:	openssl-devel
 %{?with_pam:BuildRequires:	pam-devel}
 BuildRequires:	rpmbuild(macros) >= 1.228
@@ -68,14 +63,8 @@ re-usable by everyone under an ISC license.
 
 %prep
 %setup -q
-%patch -P0 -p1
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
 %configure \
 	--sysconfdir=%{_sysconfdir}/mail \
 	%{?with_pam:--with-auth-pam=smtp} \
@@ -83,6 +72,7 @@ re-usable by everyone under an ISC license.
 	--with-mantype=man \
 	--with-path-CAfile=%{certsdir}/ca-certificates.crt \
 	--with-path-empty=%{privsepdir} \
+	--without-libbsd \
 	%{?with_table_db:--with-table-db} \
 	--with-user-queue=smtpq \
 	--with-user-smtpd=smtpd
@@ -168,11 +158,19 @@ fi
 %attr(755,root,root) %{_sbindir}/smtpctl
 %attr(755,root,root) %{_sbindir}/smtpd
 %attr(755,root,root) %{_prefix}/lib/sendmail
+%{_mandir}/man1/lockspool.1*
 %{_mandir}/man1/smtp.1*
 %{_mandir}/man5/aliases.5*
 %{_mandir}/man5/forward.5*
 %{_mandir}/man5/smtpd.conf.5*
 %{_mandir}/man5/table.5*
+%{_mandir}/man7/smtpd-filters.7*
+%{_mandir}/man7/smtpd-tables.7*
+%{_mandir}/man8/mail.lmtp.8*
+%{_mandir}/man8/mail.local.8*
+%{_mandir}/man8/mail.maildir.8*
+%{_mandir}/man8/mail.mboxfile.8*
+%{_mandir}/man8/mail.mda.8*
 %{_mandir}/man8/sendmail.8*
 %{_mandir}/man8/smtpctl.8*
 %{_mandir}/man8/smtpd.8*
